@@ -16,18 +16,21 @@ class AuthorizeNetPlugin {
       required String cardHolderName,
       required String apiLoginId,
       required String clientId}) async {
-    final String version =
-        await _channel.invokeMethod('authorizeNetToken', <String, String?>{
+    final _arguments = <String, String>{
       'env': env,
       'card_number': cardNumber,
       'expiration_month': expirationMonth,
       'expiration_year': expirationYear,
       'card_cvv': cardCvv,
-      'zip_code': zipCode,
       'card_holder_name': cardHolderName,
       'api_login_id': apiLoginId,
       'client_id': clientId,
-    });
+    };
+    if (zipCode != null) {
+      _arguments['zip_code'] = zipCode;
+    }
+    final String version =
+        await _channel.invokeMethod('authorizeNetToken', _arguments);
     return version;
   }
 }
