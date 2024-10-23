@@ -25,7 +25,6 @@ public class SwiftAuthorizeNetPlugin: NSObject, FlutterPlugin {
               let expiration_month = args["expiration_month"] as? String,
               let expiration_year = args["expiration_year"] as? String,
               let card_cvv = args["card_cvv"] as? String,
-              let card_holder_name = args["card_holder_name"] as? String,
               let api_login_id = args["api_login_id"] as? String,
               let client_id = args["client_id"] as? String
         else {
@@ -47,12 +46,16 @@ public class SwiftAuthorizeNetPlugin: NSObject, FlutterPlugin {
         token.expirationMonth = expiration_month
         token.expirationYear = expiration_year
         token.cardCode = card_cvv
-        token.fullName = card_holder_name
         
         // Handle optional zip code
         if let zip_code = args["zip_code"] as? String {
             if !zip_code.isEmpty {
                 token.zip = zip_code
+            }
+        }
+        if let card_holder_name = args["card_holder_name"] as? String {
+            if !card_holder_name.isEmpty {
+                token.fullName = card_holder_name
             }
         }
         
