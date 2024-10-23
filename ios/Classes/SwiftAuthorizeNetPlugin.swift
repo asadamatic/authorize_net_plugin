@@ -12,15 +12,18 @@ public class SwiftAuthorizeNetPlugin: NSObject, FlutterPlugin {
   public func handle(_ call: FlutterMethodCall, result: @escaping FlutterResult) {
     if(call.method == "authorizeNetToken"){
         let argErr = FlutterError(code: "BAD_ARGS", message: "Failed to parse arguments!", details: nil)
-        guard let args = call.arguments as? Dictionary<String, String> else {result(argErr); return }
-        guard let env = args["env"] else { result(argErr); return }
-        guard let card_number = args["card_number"] else { result(argErr); return }
-        guard let expiration_month = args["expiration_month"] else { result(argErr); return }
-        guard let expiration_year = args["expiration_year"] else { result(argErr); return }
-        guard let card_cvv = args["card_cvv"] else { result(argErr); return }
-        guard let card_holder_name = args["card_holder_name"] else { result(argErr); return }
-        guard let api_login_id = args["api_login_id"] else { result(argErr); return }
-        guard let client_id = args["client_id"] else { result(argErr); return }
+          // First check if we can cast the arguments to Dictionary
+        guard let args = call.arguments as? Dictionary<String, Any> else {result(argErr); return }
+        
+        // Check required parameters
+        guard let env = args["env"] as? String else { result(argErr); return }
+        guard let card_number = args["card_number"] as? String else { result(argErr); return }
+        guard let expiration_month = args["expiration_month"] as? String else { result(argErr); return }
+        guard let expiration_year = args["expiration_year"] as? String else { result(argErr); return }
+        guard let card_cvv = args["card_cvv"] as? String else { result(argErr); return }
+        guard let card_holder_name = args["card_holder_name"] as? String else { result(argErr); return }
+        guard let api_login_id = args["api_login_id"] as? String else { result(argErr); return }
+        guard let client_id = args["client_id"] as? String else { result(argErr); return }
         
         var handler = AcceptSDKHandler(environment: AcceptSDKEnvironment.ENV_TEST)
         if(env == "production"){
@@ -36,8 +39,8 @@ public class SwiftAuthorizeNetPlugin: NSObject, FlutterPlugin {
         request.securePaymentContainerRequest.webCheckOutDataType.token.cardCode = card_cvv
         request.securePaymentContainerRequest.webCheckOutDataType.token.fullName = card_holder_name
         
-        // Only set zip code if it exists in the arguments
-        if let zip_code = args["zip_code"], !zip_code.isEmpty {
+        // Optional zip code
+        if let zip_code = args["zip_code"] as? String, !zip_code.isEmpty {
             request.securePaymentContainerRequest.webCheckOutDataType.token.zip = zip_code
         }
         
