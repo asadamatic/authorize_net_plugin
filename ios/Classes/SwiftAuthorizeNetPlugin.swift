@@ -53,6 +53,8 @@ public class SwiftAuthorizeNetPlugin: NSObject, FlutterPlugin {
                 token.zip = zip_code
             }
         }
+        
+        // Handle optional card holder name
         if let card_holder_name = args["card_holder_name"] as? String {
             if !card_holder_name.isEmpty {
                 token.fullName = card_holder_name
